@@ -89,6 +89,11 @@ class Chef
       :description => "The version of Chef to install",
       :proc => Proc.new { |v| Chef::Config[:knife][:bootstrap_version] = v }
 
+      option :bootstrap_proxy,
+      :long => "--bootstrap-proxy PROXY_URL",
+      :description => "The proxy server for the node being bootstrapped",
+      :proc => Proc.new { |p| Chef::Config[:knife][:bootstrap_proxy] = p }
+
       option :distro,
       :short => "-d DISTRO",
       :long => "--distro DISTRO",
@@ -227,6 +232,7 @@ class Chef
       bootstrap.config[:chef_node_name] = server.name
       bootstrap.config[:prerelease] = config[:prerelease]
       bootstrap.config[:bootstrap_version] = locate_config_value(:bootstrap_version)
+      bootstrap.config[:bootstrap_proxy] = locate_config_value(:bootstrap_proxy)
       bootstrap.config[:distro] = locate_config_value(:distro)
       bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
       bootstrap.config[:template_file] = locate_config_value(:template_file)
