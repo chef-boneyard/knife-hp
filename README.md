@@ -29,17 +29,17 @@ Depending on your system's configuration, you may need to run this command with 
 
 # Configuration #
 
-In order to communicate with HP Compute Cloud's API you will need to tell Knife the account ID, the secret key and tenant ID (you may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
+In order to communicate with HP Compute Cloud's API you will need to tell Knife the Access Key ID, the Secret Key and Tenant ID (found on the "API Keys" page). You may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
 
-    knife[:hp_account_id] = "Your HP Cloud account ID"
-    knife[:hp_secret_key] = "Your HP Cloud secret key"
-    knife[:hp_tenant_id]  = "Your HP Cloud tenant ID"
+    knife[:hp_access_key] = "Your HP Cloud Access Key ID"
+    knife[:hp_secret_key] = "Your HP Cloud Secret Key"
+    knife[:hp_tenant_id]  = "Your HP Cloud Tenant ID"
     knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
     knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is "az1")
 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
-    knife[:hp_account_id] = "#{ENV['HP_ACCOUNT']}"
+    knife[:hp_access_key] = "#{ENV['HP_ACCESS_KEY']}"
     knife[:hp_secret_key] = "#{ENV['HP_SECRET_KEY']}"
     knife[:hp_tenant_id]  = "#{ENV['HP_TENANT_ID']}"
     knife[:hp_auth_uri]   = "#{ENV['HP_AUTH_URI']}"
@@ -47,7 +47,7 @@ If your knife.rb file will be checked into a SCM system (ie readable by others) 
 
 You also have the option of passing your HP Cloud API options from the command line:
 
-    `-A` (or `--hp-account`) your HP Cloud Access Key ID
+    `-A` (or `--hp-access`) your HP Cloud Access Key ID
     `-K` (or `--hp-secret`) your HP Cloud Secret Key
     `-T` (or `--hp-tenant`) your HP Cloud Tenant ID
     `--hp-auth` your HP Cloud Auth URI (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
