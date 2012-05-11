@@ -9,20 +9,21 @@ Be sure you are running the latest version Chef. Versions earlier than 0.10.0 do
 
     $ gem install chef
 
-This plugin currently depends on HP's fork of Fog. To install it, run:
+This plugin currently depends on Fog's master branch, the `HP` provider will be in the next release. To install it, run:
 
     $ cd /tmp
-    $ wget http://build.hpcloud.com/sites/default/files/downloads/hpfog_2.tar
-    $ tar -xf hpfog_2.tar
-    $ gem install ./hpfog-0.0.14.gem
+    $ git clone https://github.com/fog/fog.git
+    $ cd fog
+    $ gem build fog.gemspec
+    $ gem install fog-1.3.1.gem
 
 This plugin is distributed as a Ruby Gem, but is not available on Rubygems.org because of the missing Fog dependencies. To install it, run:
 
     $ cd /tmp
-    $ git clone -b 0.1.0 git://github.com/mattray/knife-hp.git
+    $ git clone git://github.com/mattray/knife-hp.git
     $ cd knife-hp
     $ gem build knife-hp.gemspec
-    $ gem install knife-hp-0.1.0.gem
+    $ gem install knife-hp-0.2.0.gem
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
@@ -39,10 +40,10 @@ In order to communicate with HP Compute Cloud's API you will need to tell Knife 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
     knife[:hp_account_id] = "#{ENV['HP_ACCOUNT']}"
-    knife[:hp_secret_key] = "#{ENV['HP_SECRET]}"
-    knife[:hp_tenant_id]  = "#{ENV['HP_TENANT]}"
-    knife[:hp_auth_uri]   = "#{ENV['HP_AUTH]}"
-    knife[:hp_avl_zone]   = "#{ENV['HP_AVL_ZONE]}"
+    knife[:hp_secret_key] = "#{ENV['HP_SECRET_KEY']}"
+    knife[:hp_tenant_id]  = "#{ENV['HP_TENANT_ID']}"
+    knife[:hp_auth_uri]   = "#{ENV['HP_AUTH_URI']}"
+    knife[:hp_avl_zone]   = "#{ENV['HP_AVL_ZONE']}"
 
 You also have the option of passing your HP Cloud API options from the command line:
 
