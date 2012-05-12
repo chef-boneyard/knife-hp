@@ -3,6 +3,8 @@ Knife HP
 
 This is the official Opscode Knife plugin for HP Cloud. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
 
+Please refer to the CHANGELOG.md for version history.
+
 # Installation #
 
 Be sure you are running the latest version Chef. Versions earlier than 0.10.0 don't support plugins:
