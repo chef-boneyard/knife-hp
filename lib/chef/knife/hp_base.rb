@@ -62,7 +62,7 @@ class Chef
           :short => "-Z Zone",
           :long => "--hp-zone Zone",
           :default => "az1",
-          :description => "Your HP Cloud Availability Zone (az1/az2/az3)",
+          :description => "Your HP Cloud Availability Zone (az1/az2)",
           :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key }
         end
       end
