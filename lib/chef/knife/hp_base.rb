@@ -34,11 +34,11 @@ class Chef
             require 'chef/json_compat'
           end
 
-          option :hp_access_key,
+          option :hp_account_id,
           :short => "-A ID",
-          :long => "--hp-access ID",
+          :long => "--hp-account ID",
           :description => "Your HP Cloud Access Key ID",
-          :proc => Proc.new { |key| Chef::Config[:knife][:hp_access_key] = key }
+          :proc => Proc.new { |key| Chef::Config[:knife][:hp_account_id] = key }
 
           option :hp_secret_key,
           :short => "-K SECRET",
@@ -68,7 +68,7 @@ class Chef
       end
 
       def connection
-        Chef::Log.debug("hp_access_key: #{Chef::Config[:knife][:hp_access_key]}")
+        Chef::Log.debug("hp_account_id: #{Chef::Config[:knife][:hp_account_id]}")
         Chef::Log.debug("hp_secret_key: #{Chef::Config[:knife][:hp_secret_key]}")
         Chef::Log.debug("hp_tenant_id: #{Chef::Config[:knife][:hp_tenant_id]}")
         Chef::Log.debug("hp_auth_uri: #{locate_config_value(:hp_auth_uri)}")
@@ -76,7 +76,7 @@ class Chef
         @connection ||= begin
                           connection = Fog::Compute.new(
             :provider => 'HP',
-            :hp_access_key => Chef::Config[:knife][:hp_access_key],
+            :hp_account_id => Chef::Config[:knife][:hp_account_id],
             :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
             :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
             :hp_auth_uri => locate_config_value(:hp_auth_uri),
@@ -96,7 +96,7 @@ class Chef
         end
       end
 
-      def validate!(keys=[:hp_access_key, :hp_secret_key, :hp_tenant_id])
+      def validate!(keys=[:hp_account_id, :hp_secret_key, :hp_tenant_id])
         errors = []
 
         keys.each do |k|

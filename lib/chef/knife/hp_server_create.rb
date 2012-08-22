@@ -145,7 +145,7 @@ class Chef
 
         connection = Fog::Compute.new(
           :provider => 'HP',
-          :hp_access_key => Chef::Config[:knife][:hp_access_key],
+          :hp_account_id => Chef::Config[:knife][:hp_account_id],
           :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
           :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
           :hp_auth_uri => locate_config_value(:hp_auth_uri),
@@ -246,7 +246,7 @@ class Chef
 
     def validate!
 
-      super([:image, :flavor, :hp_access_key, :hp_secret_key, :hp_tenant_id])
+      super([:image, :flavor, :hp_account_id, :hp_secret_key, :hp_tenant_id])
 
       if ami.nil?
         ui.error("You have not provided a valid image ID. Please note the short option for this value recently changed from '-i' to '-I'.")
