@@ -13,7 +13,7 @@ This is a list of features currently lacking and (eventually) under development:
 * Added virtual cpus to 'knife openstack flavor list'
 
 ## v0.2.0
-* support for unenven_columns for prettier output
+* support for uneven_columns for prettier output
 * added bootstrap-proxy support. (Matt Butcher)
 * updated to point to Fog 1.4.0 for `HP` provider
 * chef-full is now default bootstrap template
@@ -22,6 +22,7 @@ This is a list of features currently lacking and (eventually) under development:
 * Add support for `--no-host-key-verify`
 * switched from hp_account_id to hp_access_key (Hugues Malphettes reported)
   patch didn't make it into Fog 1.4, so reverted for now
+* --purge (and --node-name) added for `knife hp server delete` to remove client and nodes
 
 * Add support for associating floating IPs on server create and verify they are automatically disassociated on server delete
 

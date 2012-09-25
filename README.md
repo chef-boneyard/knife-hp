@@ -63,10 +63,12 @@ Provisions a new server in the HP Compute Cloud and then perform a Chef bootstra
 
     knife hp server create -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem
 
+    knife hp server create -f 101 -I 9883 -S hptesting-az2 -i ~/.ssh/hptesting-az2.pem -Z az2 -x ubuntu
+
 knife hp server delete
 ----------------------
 
-Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server.
+Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server without using the `-P` or `--purge` option to purge the client.
 
 knife hp server list
 --------------------
