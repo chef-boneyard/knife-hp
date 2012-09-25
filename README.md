@@ -59,16 +59,14 @@ This plugin provides the following Knife subcommands. Specific command options c
 knife hp server create
 ----------------------
 
-Provisions a new server in the HP Compute Cloud and then perform a Chef bootstrap (using the SSH protocol). The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef Server. By default the server is bootstrapped using the [ubuntu10.04-gems](https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/ubuntu10.04-gems.erb) template. This can be overridden using the `-d` or `--template-file` command options. If you do not pass a node name with `-N NAME` (or `--node-name NAME`) a name will be generated for the node.
+Provisions a new server in the HP Compute Cloud and then perform a Chef bootstrap (using the SSH protocol). The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef Server. By default the server is bootstrapped using the [chef-full](https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/chef-full.erb) template. This can be overridden using the `-d` or `--template-file` command options. If you do not pass a node name with `-N NAME` (or `--node-name NAME`) a name will be generated for the node. The default behavior for nodes created through HP's API are to be given an public floating address.
 
-    knife hp server create -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem
-
-    knife hp server create -f 101 -I 9883 -S hptesting-az2 -i ~/.ssh/hptesting-az2.pem -Z az2 -x ubuntu
+    knife hp server create -f 101 -I 9883 -S hpkeypair -i ~/.ssh/hpkeypair.pem -Z az2 -x ubuntu
 
 knife hp server delete
 ----------------------
 
-Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server without using the `-P` or `--purge` option to purge the client.
+Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server without using the `-P` or `--purge` option to purge the client. The floating address associated with the node is released on deletion.
 
 knife hp server list
 --------------------

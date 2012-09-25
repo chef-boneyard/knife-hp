@@ -64,6 +64,7 @@ class Chef
         @name_args.each do |instance_id|
           begin
             server = connection.servers.get(instance_id)
+            addresses = connection.addresses
 
             msg_pair("Instance ID", server.id)
             msg_pair("Instance Name", server.name)
@@ -76,6 +77,17 @@ class Chef
             confirm("Do you really want to delete this server")
 
             server.destroy
+
+            #HP doesn't free allocated IPs when servers are deleted
+            #if the address is a floating, it's the first entry in the private addresses(?)
+            float = server.addresses['private'][0]['addr']
+            Chef::Log.debug("hp_server_delete: float:#{float}")
+            addresses.each do |address|
+              if !(address.fixed_ip.nil?) && (address.fixed_ip == float)
+                msg_pair("Deleted Floating IP Address", float)
+                address.destroy
+              end
+            end
 
             ui.warn("Deleted server #{server.id}")
 
