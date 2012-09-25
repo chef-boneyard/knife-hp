@@ -114,6 +114,12 @@ class Chef
       :proc => lambda { |o| o.split(/[\s,]+/) },
       :default => []
 
+      option :host_key_verify,
+      :long => "--[no-]host-key-verify",
+      :description => "Verify host key, enabled by default",
+      :boolean => true,
+      :default => true
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -229,6 +235,7 @@ class Chef
       bootstrap.config[:run_list] = config[:run_list]
       bootstrap.config[:ssh_user] = config[:ssh_user]
       bootstrap.config[:identity_file] = config[:identity_file]
+      bootstrap.config[:host_key_verify] = config[:host_key_verify]
       bootstrap.config[:chef_node_name] = server.name
       bootstrap.config[:prerelease] = config[:prerelease]
       bootstrap.config[:bootstrap_version] = locate_config_value(:bootstrap_version)
