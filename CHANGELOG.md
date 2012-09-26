@@ -10,7 +10,7 @@ This is a list of features currently lacking and (eventually) under development:
 * Floating IPs are assigned on creation, support creating nodes without them (see knife-openstack's --private-network)
 * Floating IPs are freed on node deletion, support not freeing them
 * Re-assign a floating IPs on node creation
-* Add /etc/chef/ohai/hints/hp.json, the `openstack` Ohai plugin keys off of it and pulls from the meta-data service.
+* Create the `hp` Ohai plugin (or re-use the `openstack` one) to key off of the /etc/chef/ohai/hints/hp.json file, pulling from the meta-data service.
 * Validate ohai cloud support
 
 ## v0.2.0
@@ -25,6 +25,7 @@ This is a list of features currently lacking and (eventually) under development:
   patch didn't make it into Fog 1.4, so reverted for now
 * --purge (and --node-name) added for `knife hp server delete` to remove client and nodes
 * Floating IPs are automatically disassociated on server delete
+* Added /etc/chef/ohai/hints/hp.json for use by Ohai
 
 ## v0.1.0
 * initial developer release

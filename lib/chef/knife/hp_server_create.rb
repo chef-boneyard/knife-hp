@@ -176,7 +176,11 @@ class Chef
         :flavor_id => locate_config_value(:flavor),
         :image_id => locate_config_value(:image),
         :security_groups => config[:security_groups],
-        :key_name => Chef::Config[:knife][:hp_ssh_key_id]
+        :key_name => Chef::Config[:knife][:hp_ssh_key_id],
+        :personality => [{
+            "path" => "/etc/chef/ohai/hints/hp.json",
+            "contents" => ''
+          }]
       }
 
       server = connection.servers.create(server_def)

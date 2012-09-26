@@ -89,7 +89,7 @@ There are a number of known issues waiting for upstream patches to be merged in 
 
 * az1 is currently unavailable via Fog. The default Availability Zone through the API is 'az3', even when specifying 'az1'. Yet 'az3' is unavailable as an selection option (https://github.com/fog/fog/pull/903). To work with az3, do not pass an Availability Zone at all. See also https://github.com/fog/fog/issues/1175
 * The names of the HP Cloud Access Key ID should change from `hp_access_key` to `hp_account_id` to match HP's description https://github.com/fog/fog/pull/902
-* There is no support in Ohai yet. http://tickets.opscode.com/browse/OHAI-335
+* There is no support in Ohai yet, but the empty `/etc/chef/ohai/hints/hp.json` is created. http://tickets.opscode.com/browse/OHAI-335
 
 # License #
 
