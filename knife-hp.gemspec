@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.md", "LICENSE" ]
-  s.authors     = ["Matt Ray"]
-  s.email       = ["matt@opscode.com"]
+  s.authors     = ["Matt Ray", "Adam Jacob"]
+  s.email       = ["adam@opscode.com", "matt@opscode.com"]
   s.homepage    = "https://github.com/opscode/knife-hp"
   s.summary     = %q{HP Cloud Services Cloud support for Chef's Knife command}
   s.description = s.summary
