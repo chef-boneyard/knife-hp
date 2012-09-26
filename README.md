@@ -1,7 +1,7 @@
 Knife HP
 ========
 
-This is the official Opscode Knife plugin for HP Cloud. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
+This is the official Opscode Knife plugin for HP Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
 
 Please refer to the CHANGELOG.md for version history.
 
@@ -82,6 +82,14 @@ knife hp image list
 -------------------
 
 Outputs a list of all available images available to the currently configured HP Compute Cloud account. An image is a collection of files used to create or rebuild a server. Currently the list returned is unfiltered and does not match the view on the dashboard, images with "(Kernel)" and "(Ramdisk)" are not intended for use bootstrapping. This data can be useful when choosing an image id to pass to the `knife hp server create` subcommand.
+
+KNOWN ISSUES
+============
+There are a number of known issues waiting for upstream patches to be merged in Fog and added to Ohai. The CHANGELOG.md has more missing/incomplete features listed.
+
+* az1 is currently unavailable via Fog. The default Availability Zone through the API is 'az3', even when specifying 'az1'. Yet 'az3' is unavailable as an selection option (https://github.com/fog/fog/pull/903). To work with az3, do not pass an Availability Zone at all. See also https://github.com/fog/fog/issues/1175
+* The names of the HP Cloud Access Key ID should change from `hp_access_key` to `hp_account_id` to match HP's description https://github.com/fog/fog/pull/902
+* There is no support in Ohai yet. http://tickets.opscode.com/browse/OHAI-335
 
 # License #
 

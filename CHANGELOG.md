@@ -1,16 +1,17 @@
 # TODO #
 This is a list of features currently lacking and (eventually) under development:
 * filter out extraneous images from knife hp image list (requires HP metadata not yet available)
-* should the node.name and node.id be the same (might have to fix this in the ohai plugin)
+* should the node.name and node.id be the same (might have to fix this in the ohai plugin since this appears unavailable for setting)
 * take either the flavor ID or the flavor name for server create
 * take either the image ID or the image name for server create
 * Virtual cpus to `hp flavor list`?
 * Show the flavor and image names in `hp server list`
-* Add support for `--private-network` for bootstrapping private networks
 * Floating IPs are assigned on creation, but the public ip is incorrect
-* Floating IPs are assigned on creation, support creating nodes without them
+* Floating IPs are assigned on creation, support creating nodes without them (see knife-openstack's --private-network)
 * Floating IPs are freed on node deletion, support not freeing them
 * Re-assign a floating IPs on node creation
+* Add /etc/chef/ohai/hints/hp.json, the `openstack` Ohai plugin keys off of it and pulls from the meta-data service.
+* Validate ohai cloud support
 
 ## v0.2.0
 * support for uneven_columns for prettier output
@@ -24,8 +25,6 @@ This is a list of features currently lacking and (eventually) under development:
   patch didn't make it into Fog 1.4, so reverted for now
 * --purge (and --node-name) added for `knife hp server delete` to remove client and nodes
 * Floating IPs are automatically disassociated on server delete
-
-* Add /etc/chef/ohai/hints/hp.json, the `openstack` Ohai plugin keys off of it and pulls from the meta-data service.
 
 ## v0.1.0
 * initial developer release
