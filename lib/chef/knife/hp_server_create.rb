@@ -97,9 +97,9 @@ class Chef
       option :distro,
       :short => "-d DISTRO",
       :long => "--distro DISTRO",
-      :description => "Bootstrap a distro using a template",
+      :description => "Bootstrap a distro using a template; default is 'chef-full'",
       :proc => Proc.new { |d| Chef::Config[:knife][:distro] = d },
-      :default => "ubuntu10.04-gems"
+      :default => "chef-full"
 
       option :template_file,
       :long => "--template-file TEMPLATE",
@@ -113,6 +113,12 @@ class Chef
       :description => "Comma separated list of roles/recipes to apply",
       :proc => lambda { |o| o.split(/[\s,]+/) },
       :default => []
+
+      option :host_key_verify,
+      :long => "--[no-]host-key-verify",
+      :description => "Verify host key, enabled by default",
+      :boolean => true,
+      :default => true
 
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
@@ -170,7 +176,11 @@ class Chef
         :flavor_id => locate_config_value(:flavor),
         :image_id => locate_config_value(:image),
         :security_groups => config[:security_groups],
-        :key_name => Chef::Config[:knife][:hp_ssh_key_id]
+        :key_name => Chef::Config[:knife][:hp_ssh_key_id],
+        :personality => [{
+            "path" => "/etc/chef/ohai/hints/hp.json",
+            "contents" => ''
+          }]
       }
 
       server = connection.servers.create(server_def)
@@ -229,6 +239,7 @@ class Chef
       bootstrap.config[:run_list] = config[:run_list]
       bootstrap.config[:ssh_user] = config[:ssh_user]
       bootstrap.config[:identity_file] = config[:identity_file]
+      bootstrap.config[:host_key_verify] = config[:host_key_verify]
       bootstrap.config[:chef_node_name] = server.name
       bootstrap.config[:prerelease] = config[:prerelease]
       bootstrap.config[:bootstrap_version] = locate_config_value(:bootstrap_version)
