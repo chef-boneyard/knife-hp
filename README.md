@@ -1,7 +1,9 @@
 Knife HP
 ========
 
-This is the official Opscode Knife plugin for HP Cloud. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
+This is the official Opscode Knife plugin for HP Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
+
+Please refer to the CHANGELOG.md for version history.
 
 # Installation #
 
@@ -9,40 +11,29 @@ Be sure you are running the latest version Chef. Versions earlier than 0.10.0 do
 
     $ gem install chef
 
-This plugin currently depends on HP's fork of Fog. To install it, run:
+This plugin is distributed as a Ruby Gem. To install it, run:
 
-    $ cd /tmp
-    $ wget http://build.hpcloud.com/sites/default/files/downloads/hpfog_2.tar
-    $ tar -xf hpfog_2.tar
-    $ gem install ./hpfog-0.0.14.gem
-
-This plugin is distributed as a Ruby Gem, but is not available on Rubygems.org because of the missing Fog dependencies. To install it, run:
-
-    $ cd /tmp
-    $ git clone -b 0.1.0 git://github.com/mattray/knife-hp.git
-    $ cd knife-hp
-    $ gem build knife-hp.gemspec
-    $ gem install knife-hp-0.1.0.gem
+    $ gem install knife-hp
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
 # Configuration #
 
-In order to communicate with HP Compute Cloud's API you will need to tell Knife the account ID, the secret key and tenant ID (you may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
+In order to communicate with HP Compute Cloud's API you will need to tell Knife the Access Key ID, the Secret Key and Tenant ID (found on the "API Keys" page). You may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
 
-    knife[:hp_account_id] = "Your HP Cloud account ID"
-    knife[:hp_secret_key] = "Your HP Cloud secret key"
-    knife[:hp_tenant_id]  = "Your HP Cloud tenant ID"
+    knife[:hp_account_id] = "Your HP Cloud Access Key ID"
+    knife[:hp_secret_key] = "Your HP Cloud Secret Key"
+    knife[:hp_tenant_id]  = "Your HP Cloud Tenant ID"
     knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
     knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is "az1")
 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
-    knife[:hp_account_id] = "#{ENV['HP_ACCOUNT']}"
-    knife[:hp_secret_key] = "#{ENV['HP_SECRET]}"
-    knife[:hp_tenant_id]  = "#{ENV['HP_TENANT]}"
-    knife[:hp_auth_uri]   = "#{ENV['HP_AUTH]}"
-    knife[:hp_avl_zone]   = "#{ENV['HP_AVL_ZONE]}"
+    knife[:hp_account_id] = "#{ENV['HP_ACCESS_KEY']}"
+    knife[:hp_secret_key] = "#{ENV['HP_SECRET_KEY']}"
+    knife[:hp_tenant_id]  = "#{ENV['HP_TENANT_ID']}"
+    knife[:hp_auth_uri]   = "#{ENV['HP_AUTH_URI']}"
+    knife[:hp_avl_zone]   = "#{ENV['HP_AVL_ZONE']}"
 
 You also have the option of passing your HP Cloud API options from the command line:
 
@@ -52,7 +43,7 @@ You also have the option of passing your HP Cloud API options from the command l
     `--hp-auth` your HP Cloud Auth URI (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
     `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is "az1")
 
-    knife hp server create -A 'MyUsername' -K 'MyPassword' -T 'MyTenant' -f 1 -I 13 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
+    knife hp server create -A 'MyUsername' -K 'MyPassword' -T 'MyTenant' -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
 
 Additionally the following options may be set in your `knife.rb`:
 
@@ -68,14 +59,14 @@ This plugin provides the following Knife subcommands. Specific command options c
 knife hp server create
 ----------------------
 
-Provisions a new server in the HP Compute Cloud and then perform a Chef bootstrap (using the SSH protocol). The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef Server. By default the server is bootstrapped using the [ubuntu10.04-gems](https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/ubuntu10.04-gems.erb) template. This can be overridden using the `-d` or `--template-file` command options. If you do not pass a node name with `-N NAME` (or `--node-name NAME`) a name will be generated for the node.
+Provisions a new server in the HP Compute Cloud and then perform a Chef bootstrap (using the SSH protocol). The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef Server. By default the server is bootstrapped using the [chef-full](https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/chef-full.erb) template. This can be overridden using the `-d` or `--template-file` command options. If you do not pass a node name with `-N NAME` (or `--node-name NAME`) a name will be generated for the node. The default behavior for nodes created through HP's API are to be given an public floating address.
 
-    knife hp server create -f 1 -I 13 -S hpkeypair -i ~/.ssh/hpkeypair.pem
+    knife hp server create -f 101 -I 9883 -S hpkeypair -i ~/.ssh/hpkeypair.pem -Z az2 -x ubuntu
 
 knife hp server delete
 ----------------------
 
-Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server.
+Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server without using the `-P` or `--purge` option to purge the client. The floating address associated with the node is released on deletion.
 
 knife hp server list
 --------------------
@@ -92,17 +83,13 @@ knife hp image list
 
 Outputs a list of all available images available to the currently configured HP Compute Cloud account. An image is a collection of files used to create or rebuild a server. Currently the list returned is unfiltered and does not match the view on the dashboard, images with "(Kernel)" and "(Ramdisk)" are not intended for use bootstrapping. This data can be useful when choosing an image id to pass to the `knife hp server create` subcommand.
 
-# TODO #
+KNOWN ISSUES
+============
+There are a number of known issues waiting for upstream patches to be merged in Fog and added to Ohai. The CHANGELOG.md has more missing/incomplete features listed.
 
-This is a list of features currently lacking and (eventually) under development:
-
-* filter out extraneous images from knife hp image list (requires HP metadata not yet available)
-* do we need to release associated IP addresses for deleted servers?
-* should the node.name and node.id be the same (might have to fix this in the ohai plugin)
-* need ohai plugin to populate `cloud` and `hp` attributes from http://tickets.opscode.com/browse/OHAI-335
-* take either the flavor ID or the flavor name
-* take either the image ID or the image name
-* show the flavor and image names in server lists
+* az1 is currently unavailable via Fog. The default Availability Zone through the API is 'az3', even when specifying 'az1'. Yet 'az3' is unavailable as an selection option (https://github.com/fog/fog/pull/903). To work with az3, do not pass an Availability Zone at all. See also https://github.com/fog/fog/issues/1175
+* The names of the HP Cloud Access Key ID should change from `hp_access_key` to `hp_account_id` to match HP's description https://github.com/fog/fog/pull/902
+* There is no support in Ohai yet, but the empty `/etc/chef/ohai/hints/hp.json` is created. http://tickets.opscode.com/browse/OHAI-335
 
 # License #
 
