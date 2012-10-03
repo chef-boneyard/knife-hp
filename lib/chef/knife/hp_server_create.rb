@@ -261,14 +261,18 @@ class Chef
     end
 
     def get_address
-      # Check if floating_ip is provided as param,
-      # otherwise select a floating-ip not associated to a server else create a floating-ip.
+      # Check if floating_ip is provided as CLI param,
+      # otherwise select a floating-ip not associated to any server else create a floating-ip.
       if config[:floating_ip].nil?
         address =  connection.addresses.find { |addr|  addr.instance_id.nil? } ||  connection.addresses.create()
       else
         address = connection.addresses.find { |addr| addr.ip=config[:floating_ip]}
       end
       address
+    end
+
+    def flavor
+      @flavor ||= connection.flavors.get(locate_config_value(:flavor))
     end
 
     def validate!
@@ -279,6 +283,12 @@ class Chef
         ui.error("You have not provided a valid image ID. Please note the short option for this value recently changed from '-i' to '-I'.")
         exit 1
       end
+
+      if flavor.nil?
+        ui.error("You have not provided a valid flavor ID. Please note the options for this value are -f, --flavor.")
+        exit 1
+      end
+
     end
 
     #generate a name from the IP if chef_node_name is empty
