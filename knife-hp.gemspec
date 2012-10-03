@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "fog", "~> 1.6"
-  s.add_dependency "chef", "~> 10.14.2"
+  s.add_dependency "chef", ">= 10.14.2"
 
 end
