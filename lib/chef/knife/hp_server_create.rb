@@ -164,7 +164,6 @@ class Chef
           )
 
         #request and assign a floating IP for the server
-        address = get_address
         Chef::Log.debug("Floating IP #{address.ip}")
 
         #servers require a name, generate one if not passed
@@ -260,15 +259,15 @@ class Chef
       @ami ||= connection.images.get(locate_config_value(:image))
     end
 
-    def get_address
+    def address
       # Check if floating_ip is provided as CLI param,
       # otherwise select a floating-ip not associated to any server else create a floating-ip.
       if config[:floating_ip].nil?
-        address =  connection.addresses.find { |addr|  addr.instance_id.nil? } ||  connection.addresses.create()
+        @address ||=  connection.addresses.find { |addr|  addr.instance_id.nil? } ||  connection.addresses.create()
       else
-        address = connection.addresses.find { |addr| addr.ip=config[:floating_ip]}
+        @address ||= connection.addresses.find { |addr| addr.ip==config[:floating_ip] && addr.instance_id.nil? }
       end
-      address
+      @address
     end
 
     def flavor
@@ -286,6 +285,11 @@ class Chef
 
       if flavor.nil?
         ui.error("You have not provided a valid flavor ID. Please note the options for this value are -f, --flavor.")
+        exit 1
+      end
+
+      if address.nil?
+        ui.error("You have either not provided a valid floating-ip address or have reached maximum limit of floating-ip's.")
         exit 1
       end
 
