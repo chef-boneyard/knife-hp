@@ -120,6 +120,11 @@ class Chef
       :boolean => true,
       :default => true
 
+      option :floating_ip,
+      :long => "--floating-ip IP",
+      :description => "Floating ip",
+      :proc => Proc.new { |key| Chef::Config[:knife][:floating_ip] = key}
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -159,7 +164,7 @@ class Chef
           )
 
         #request and assign a floating IP for the server
-        address = connection.addresses.create()
+        address = get_address
         Chef::Log.debug("Floating IP #{address.ip}")
 
         #servers require a name, generate one if not passed
@@ -253,6 +258,17 @@ class Chef
 
     def ami
       @ami ||= connection.images.get(locate_config_value(:image))
+    end
+
+    def get_address
+      # Check if floating_ip is provided as param,
+      # otherwise select a floating-ip not associated to a server else create a floating-ip.
+      if config[:floating_ip].nil?
+        address =  connection.addresses.find { |addr|  addr.instance_id.nil? } ||  connection.addresses.create()
+      else
+        address = connection.addresses.find { |addr| addr.ip=config[:floating_ip]}
+      end
+      address
     end
 
     def validate!
