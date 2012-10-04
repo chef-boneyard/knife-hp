@@ -258,6 +258,10 @@ class Chef
       @ami ||= connection.images.get(locate_config_value(:image))
     end
 
+    def flavor
+      @flavor ||= connection.flavors.get(locate_config_value(:flavor))
+    end
+
     def address
       # Check if floating_ip is provided as CLI param,
       # otherwise select a floating-ip not associated to any server else create a floating-ip.
@@ -275,6 +279,11 @@ class Chef
 
       if ami.nil?
         ui.error("You have not provided a valid image ID. Please note the short option for this value recently changed from '-i' to '-I'.")
+        exit 1
+      end
+
+      if flavor.nil?
+        ui.error("You have not provided a valid flavor ID. Please note the options for this value are -f, --flavor.")
         exit 1
       end
 
