@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-
 class Chef
   class Knife
     module HpBase
@@ -30,8 +28,10 @@ class Chef
 
           deps do
             require 'fog'
-            require 'readline'
             require 'chef/json_compat'
+            require 'chef/knife'
+            require 'readline'
+            Chef::Knife.load_deps
           end
 
           option :hp_account_id,
