@@ -121,6 +121,7 @@ class Chef
       :default => true
 
       option :floating_ip,
+      :short => "-a IP",
       :long => "--floating-ip IP",
       :description => "Floating IP",
       :proc => Proc.new { |key| Chef::Config[:knife][:floating_ip] = key }
