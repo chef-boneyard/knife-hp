@@ -207,7 +207,7 @@ class Chef
 
       # bootstrap using private network.
       if config[:private_network]
-        bootstrap_ip_address = server.private_ip_address['addr']
+        bootstrap_ip_address = server.private_ip_address
       else
         # Use floating_ip for bootstraping
         bootstrap_ip_address = address.ip
@@ -228,7 +228,7 @@ class Chef
       sleep 30
       print(".")
 
-      print(".") until tcp_test_ssh(server.public_ip_address) {
+      print(".") until tcp_test_ssh(bootstrap_ip_address) {
         sleep @initial_sleep_delay ||= 10
         puts("done")
       }
