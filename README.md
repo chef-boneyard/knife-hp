@@ -35,6 +35,15 @@ If your knife.rb file will be checked into a SCM system (ie readable by others) 
     knife[:hp_auth_uri]   = "#{ENV['HP_AUTH_URI']}"
     knife[:hp_avl_zone]   = "#{ENV['HP_AVL_ZONE']}"
 
+Alternatively, above options can be provided as follows:
+
+    knife[:hp][:hp_account_id] = "#{ENV['HP_ACCESS_KEY']}"
+    knife[:hp][:hp_secret_key] = "#{ENV['HP_SECRET_KEY']}"
+    knife[:hp][:hp_tenant_id]  = "#{ENV['HP_TENANT_ID']}"
+    knife[:hp][:hp_auth_uri]   = "#{ENV['HP_AUTH_URI']}"
+    knife[:hp][:hp_avl_zone]   = "#{ENV['HP_AVL_ZONE']}"
+    knife[:hp][:flavor]        = "#{ENV['HP_FLAVOR']}
+
 You also have the option of passing your HP Cloud API options from the command line:
 
     `-A` (or `--hp-account`) your HP Cloud Access Key ID

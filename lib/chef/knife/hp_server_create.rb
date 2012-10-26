@@ -149,15 +149,6 @@ class Chef
 
         validate!
 
-        connection = Fog::Compute.new(
-          :provider => 'HP',
-          :hp_account_id => Chef::Config[:knife][:hp_account_id],
-          :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
-          :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
-          :hp_auth_uri => locate_config_value(:hp_auth_uri),
-          :hp_avl_zone => locate_config_value(:hp_avl_zone).to_sym
-          )
-
         #request and assign a floating IP for the server
         address = connection.addresses.create()
         Chef::Log.debug("Floating IP #{address.ip}")

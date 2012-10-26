@@ -17,8 +17,15 @@
 #
 
 require 'chef/knife'
+require 'mixlib/config'
 
 class Chef
+  
+  class Config
+    # Namespace for knife-hp
+    knife[:hp] = Hash.new
+  end
+
   class Knife
     module HpBase
 
@@ -68,26 +75,26 @@ class Chef
       end
 
       def connection
-        Chef::Log.debug("hp_account_id: #{Chef::Config[:knife][:hp_account_id]}")
-        Chef::Log.debug("hp_secret_key: #{Chef::Config[:knife][:hp_secret_key]}")
-        Chef::Log.debug("hp_tenant_id: #{Chef::Config[:knife][:hp_tenant_id]}")
+        Chef::Log.debug("hp_account_id: #{locate_config_value(:hp_account_id)}")
+        Chef::Log.debug("hp_secret_key: #{locate_config_value(:hp_secret_key)}")
+        Chef::Log.debug("hp_tenant_id: #{locate_config_value(:hp_tenant_id)}")
         Chef::Log.debug("hp_auth_uri: #{locate_config_value(:hp_auth_uri)}")
         Chef::Log.debug("hp_avl_zone: #{locate_config_value(:hp_avl_zone)}")
         @connection ||= begin
                           connection = Fog::Compute.new(
             :provider => 'HP',
-            :hp_account_id => Chef::Config[:knife][:hp_account_id],
-            :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
-            :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
+            :hp_account_id => locate_config_value(:hp_account_id),
+            :hp_secret_key => locate_config_value(:hp_secret_key),
+            :hp_tenant_id => locate_config_value(:hp_tenant_id),
             :hp_auth_uri => locate_config_value(:hp_auth_uri),
-            :hp_avl_zone => locate_config_value(:hp_avl_zone).to_sym
+            :hp_avl_zone => locate_config_value(:hp_avl_zone)
             )
                         end
       end
 
       def locate_config_value(key)
         key = key.to_sym
-        Chef::Config[:knife][key] || config[key]
+        config[:key] || Chef::Config[:knife][:hp][key] || Chef::Config[:knife][key]
       end
 
       def msg_pair(label, value, color=:cyan)
@@ -101,7 +108,7 @@ class Chef
 
         keys.each do |k|
           pretty_key = k.to_s.gsub(/_/, ' ').gsub(/\w+/){ |w| (w =~ /(ssh)|(hp)/i) ? w.upcase  : w.capitalize }
-          if Chef::Config[:knife][k].nil?
+          if locate_config_value(k).nil?
             errors << "You did not provided a valid '#{pretty_key}' value."
           end
         end
