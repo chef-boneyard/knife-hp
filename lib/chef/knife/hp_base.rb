@@ -17,8 +17,15 @@
 #
 
 require 'chef/knife'
+require 'mixlib/config'
 
 class Chef
+  
+  class Config
+    # Namespace for knife-hp
+    knife[:hp] = Hash.new
+  end
+
   class Knife
     module HpBase
 
