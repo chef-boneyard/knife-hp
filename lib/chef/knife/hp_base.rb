@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+require 'fog'
+
 class Chef
   class Knife
     module HpBase
@@ -27,7 +29,6 @@ class Chef
         includer.class_eval do
 
           deps do
-            require 'fog'
             require 'chef/json_compat'
             require 'chef/knife'
             require 'readline'
