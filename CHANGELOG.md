@@ -13,6 +13,13 @@ This is a list of features currently lacking and (eventually) under development:
 * Create the `hp` Ohai plugin (or re-use the `openstack` one) to key off of the /etc/chef/ohai/hints/hp.json file, pulling from the meta-data service.
 * Validate ohai cloud support
 
+## v0.3.0
+* update dependency on to Fog 1.9.X
+* remove support for floating IPs since they're no longer needed, reported by Simon McCartney and Rupak Ganguly
+* test the `hp` and `cloud` ohai data
+* hp_ namespacing of attributes (Mohit Sethi)
+* 'delay-loading' changes to reduce load-time (Mohit Sethi)
+
 ## v0.2.0
 * support for uneven_columns for prettier output
 * added bootstrap-proxy support. (Matt Butcher)
