@@ -155,7 +155,7 @@ class Chef
           :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
           :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
           :hp_auth_uri => locate_config_value(:hp_auth_uri),
-          :hp_avl_zone => locate_config_value(:hp_avl_zone).to_sym
+          :hp_avl_zone => availability_zone()
           )
 
         #request and assign a floating IP for the server

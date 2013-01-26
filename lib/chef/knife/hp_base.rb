@@ -62,7 +62,7 @@ class Chef
           :short => "-Z Zone",
           :long => "--hp-zone Zone",
           :default => "az1",
-          :description => "Your HP Cloud Availability Zone (az1/az2)",
+          :description => "Your HP Cloud Availability Zone (az1/az2/az3)",
           :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key }
         end
       end
@@ -72,7 +72,7 @@ class Chef
         Chef::Log.debug("hp_secret_key: #{Chef::Config[:knife][:hp_secret_key]}")
         Chef::Log.debug("hp_tenant_id: #{Chef::Config[:knife][:hp_tenant_id]}")
         Chef::Log.debug("hp_auth_uri: #{locate_config_value(:hp_auth_uri)}")
-        Chef::Log.debug("hp_avl_zone: #{locate_config_value(:hp_avl_zone)}")
+        Chef::Log.debug("hp_avl_zone: #{availability_zone()}")
         @connection ||= begin
                           connection = Fog::Compute.new(
             :provider => 'HP',
@@ -80,7 +80,7 @@ class Chef
             :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
             :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
             :hp_auth_uri => locate_config_value(:hp_auth_uri),
-            :hp_avl_zone => locate_config_value(:hp_avl_zone).to_sym
+            :hp_avl_zone => availability_zone()
             )
                         end
       end
@@ -108,6 +108,17 @@ class Chef
 
         if errors.each{|e| ui.error(e)}.any?
           exit 1
+        end
+      end
+
+      def availability_zone()
+        case locate_config_value(:hp_avl_zone)
+        when 'az3'
+          return 'az-3.region-a.geo-1'
+        when 'az2'
+          return 'az-2.region-a.geo-1'
+        else
+          return 'az-1.region-a.geo-1'
         end
       end
 

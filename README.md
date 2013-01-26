@@ -24,8 +24,8 @@ In order to communicate with HP Compute Cloud's API you will need to tell Knife 
     knife[:hp_access_key] = "Your HP Cloud Access Key ID"
     knife[:hp_secret_key] = "Your HP Cloud Secret Key"
     knife[:hp_tenant_id]  = "Your HP Cloud Tenant ID"
-    knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-    knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is "az1")
+    knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+    knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is 'az1', choices are 'az1', 'az2' or 'az3')
 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
@@ -40,8 +40,8 @@ You also have the option of passing your HP Cloud API options from the command l
     `-A` (or `--hp-access`) your HP Cloud Access Key ID
     `-K` (or `--hp-secret`) your HP Cloud Secret Key
     `-T` (or `--hp-tenant`) your HP Cloud Tenant ID
-    `--hp-auth` your HP Cloud Auth URI (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is "az1")
+    `--hp-auth` your HP Cloud Auth URI (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is 'az1', choices are 'az1', 'az2' or 'az3')
 
     knife hp server create -A 'MyUsername' -K 'MyPassword' -T 'MyTenant' -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
 
@@ -87,7 +87,6 @@ KNOWN ISSUES
 ============
 There are a number of known issues waiting for upstream patches to be merged in Fog and added to Ohai. The CHANGELOG.md has more missing/incomplete features listed.
 
-* az1 is currently unavailable via Fog. The default Availability Zone through the API is 'az3', even when specifying 'az1'. Yet 'az3' is unavailable as an selection option (https://github.com/fog/fog/pull/903). To work with az3, do not pass an Availability Zone at all. See also https://github.com/fog/fog/issues/1175
 * There is no support in Ohai yet, but the empty `/etc/chef/ohai/hints/hp.json` is created. http://tickets.opscode.com/browse/OHAI-335
 
 # License #
