@@ -15,6 +15,7 @@ This is a list of features currently lacking and (eventually) under development:
 
 ## v0.3.0
 * update dependency on to Fog 1.9.X
+* switched back to hp_access_key from hp_account_id since it's fixed in Fog 1.9.X
 * remove support for floating IPs since they're no longer needed, reported by Simon McCartney and Rupak Ganguly
 * test the `hp` and `cloud` ohai data
 * hp_ namespacing of attributes (Mohit Sethi)
