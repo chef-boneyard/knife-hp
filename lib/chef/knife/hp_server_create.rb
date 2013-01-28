@@ -158,12 +158,8 @@ class Chef
           :hp_avl_zone => availability_zone()
           )
 
-        #request and assign a floating IP for the server
-        address = connection.addresses.create()
-        Chef::Log.debug("Floating IP #{address.ip}")
-
         #servers require a name, generate one if not passed
-        node_name = get_node_name(config[:chef_node_name], address.ip)
+        node_name = get_node_name(config[:chef_node_name])
 
         Chef::Log.debug("Name #{node_name}")
         Chef::Log.debug("Flavor #{locate_config_value(:flavor)}")
@@ -197,10 +193,6 @@ class Chef
       # wait for it to be ready to do stuff
       server.wait_for { print "."; ready? }
 
-      address.server = server
-
-      server.wait_for { print "."; ready? }
-
       puts("\n")
 
       msg_pair("Public IP Address", server.public_ip_address)
@@ -208,7 +200,7 @@ class Chef
 
       print "\n#{ui.color("Waiting for sshd", :magenta)}"
 
-      #hack to ensure the nodes have had time to spin up
+      # hack to ensure the nodes have had time to spin up
       print(".")
       sleep 30
       print(".")
@@ -265,10 +257,11 @@ class Chef
       end
     end
 
-    #generate a name from the IP if chef_node_name is empty
-    def get_node_name(chef_node_name, ipaddress)
+    #generate a random name if chef_node_name is empty
+    def get_node_name(chef_node_name)
       return chef_node_name unless chef_node_name.nil?
-      chef_node_name = "hp"+ipaddress.gsub(/\./,'-')
+      #lazy uuids
+      chef_node_name = "hp-"+rand.to_s.split('.')[1]
     end
   end
 end
