@@ -40,12 +40,14 @@ class Chef
         ]
         connection.security_groups.sort_by(&:name).each do |group|
           group.rules.each do |rule|
-            group_list << group.name
-            group_list << group.description
-            group_list << rule['ip_protocol']
-            group_list << rule['from_port'].to_s
-            group_list << rule['to_port'].to_s
-            group_list << rule['ip_range']['cidr']
+            unless rule['ip_protocol'].nil?
+              group_list << group.name
+              group_list << group.description
+              group_list << rule['ip_protocol']
+              group_list << rule['from_port'].to_s
+              group_list << rule['to_port'].to_s
+              group_list << rule['ip_range']['cidr']
+            end
           end
         end
         puts ui.list(group_list, :uneven_columns_across, 6)
