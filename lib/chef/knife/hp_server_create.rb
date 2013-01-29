@@ -117,6 +117,12 @@ class Chef
       :boolean => true,
       :default => true
 
+      option :private_network,
+      :long => '--private-network',
+      :description => 'Use the private IP for bootstrapping rather than the public IP',
+      :boolean => true,
+      :default => false
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -195,6 +201,13 @@ class Chef
       msg_pair("Public IP Address", server.public_ip_address)
       msg_pair("Private IP Address", server.private_ip_address)
 
+      # bootstrap using private network.
+      if config[:private_network]
+        bootstrap_ip_address = server.private_ip_address
+      else
+        bootstrap_ip_address = server.public_ip_address
+      end
+
       print "\n#{ui.color("Waiting for sshd", :magenta)}"
 
       # hack to ensure the nodes have had time to spin up
@@ -202,12 +215,12 @@ class Chef
       sleep 30
       print(".")
 
-      print(".") until tcp_test_ssh(server.public_ip_address) {
+      print(".") until tcp_test_ssh(bootstrap_ip_address) {
         sleep @initial_sleep_delay ||= 10
         puts("done")
       }
 
-      bootstrap_for_node(server).run
+      bootstrap_for_node(server, bootstrap_ip_address).run
 
       puts "\n"
       msg_pair("Instance ID", server.id)
@@ -222,9 +235,9 @@ class Chef
       msg_pair("Run List", config[:run_list].join(', '))
     end
 
-    def bootstrap_for_node(server)
+    def bootstrap_for_node(server, bootstrap_ip_address)
       bootstrap = Chef::Knife::Bootstrap.new
-      bootstrap.name_args = [server.public_ip_address]
+      bootstrap.name_args = bootstrap_ip_address
       bootstrap.config[:run_list] = config[:run_list]
       bootstrap.config[:ssh_user] = config[:ssh_user]
       bootstrap.config[:identity_file] = config[:identity_file]
@@ -240,16 +253,25 @@ class Chef
       bootstrap
     end
 
-    def ami
-      @ami ||= connection.images.get(locate_config_value(:image))
+    def flavor
+      @flavor ||= connection.flavors.get(locate_config_value(:flavor))
+    end
+
+    def image
+      @image ||= connection.images.get(locate_config_value(:image))
     end
 
     def validate!
 
       super([:image, :flavor, :hp_access_key, :hp_secret_key, :hp_tenant_id])
 
-      if ami.nil?
-        ui.error("You have not provided a valid image ID. Please note the short option for this value recently changed from '-i' to '-I'.")
+      if flavor.nil?
+        ui.error("You have not provided a valid flavor ID. Please note the options for this value are -f or --flavor.")
+        exit 1
+      end
+
+      if image.nil?
+        ui.error("You have not provided a valid image ID. Please note the options for this value are -I or --image.")
         exit 1
       end
     end
