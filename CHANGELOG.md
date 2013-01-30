@@ -1,25 +1,20 @@
 # TODO #
 This is a list of features currently lacking and (eventually) under development:
-* filter out extraneous images from knife hp image list (requires HP metadata not yet available)
+* should we sort the image list like the HP console does? segmented by Public/Partner/Private? "knife hp image list partner"?
 * should the node.name and node.id be the same (might have to fix this in the ohai plugin since this appears unavailable for setting)
 * take either the flavor ID or the flavor name for server create
 * take either the image ID or the image name for server create
 * Virtual cpus to `hp flavor list`?
 * Show the flavor and image names in `hp server list`
-* Floating IPs are assigned on creation, but the public ip is incorrect
-* Floating IPs are assigned on creation, support creating nodes without them (see knife-openstack's --private-network)
-* Floating IPs are freed on node deletion, support not freeing them
-* Re-assign a floating IPs on node creation
-* Create the `hp` Ohai plugin (or re-use the `openstack` one) to key off of the /etc/chef/ohai/hints/hp.json file, pulling from the meta-data service.
-* Validate ohai cloud support
+* Validate ohai cloud support (waiting on OHAI-425)
 
 ## v0.3.0
 * update dependency on to Fog 1.9.X
 * switched back to hp_access_key from hp_account_id since it's fixed in Fog 1.9.X
 * remove support for floating IPs since they're no longer needed, reported by Simon McCartney and Rupak Ganguly
-* test the `hp` and `cloud` ohai data
-* hp_ namespacing of attributes (Mohit Sethi)
 * 'delay-loading' changes to reduce load-time (Mohit Sethi)
+* added 'knife hp group list' for listing security groups and their rules (KNIFE-227)
+* filter out extraneous images from knife hp image list (requires HP metadata not yet available)
 
 ## v0.2.0
 * support for uneven_columns for prettier output
