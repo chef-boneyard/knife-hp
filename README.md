@@ -81,7 +81,7 @@ Outputs a list of all flavors (hardware configuration for a server) available to
 knife hp image list
 -------------------
 
-Outputs a list of all images available to the currently configured HP Compute Cloud account. An image is a collection of files used to create or rebuild a server. The returned list filtered and does not contain images with "(deprecated)", "(Kernel)" or "(Ramdisk)" in their names. This data may be useful when choosing an image id to pass to the `knife hp server create` subcommand.
+Outputs a list of all images available to the currently configured HP Compute Cloud account. An image is a collection of files used to create or rebuild a server. The returned list filtered and does not contain images with "(deprecated)", "(Kernel)" or "(Ramdisk)" in their names (this may be disabled with `--disable-filter`). This data may be useful when choosing an image id to pass to the `knife hp server create` subcommand.
 
 knife hp group list
 --------------------
