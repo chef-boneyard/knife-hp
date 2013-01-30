@@ -152,15 +152,6 @@ class Chef
 
         validate!
 
-        connection = Fog::Compute.new(
-          :provider => 'HP',
-          :hp_access_key => Chef::Config[:knife][:hp_access_key],
-          :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
-          :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
-          :hp_auth_uri => locate_config_value(:hp_auth_uri),
-          :hp_avl_zone => availability_zone()
-          )
-
         #servers require a name, generate one if not passed
         node_name = get_node_name(config[:chef_node_name])
 
@@ -188,7 +179,7 @@ class Chef
       msg_pair("Instance Name", server.name)
       msg_pair("Flavor", server.flavor['id'])
       msg_pair("Image", server.image['id'])
-      #msg_pair("Security Group(s)", server.security_groups.join(", "))
+      msg_pair("Security Group(s)", server.security_groups.join(", "))
       msg_pair("SSH Key Pair", server.key_name)
 
       print "\n#{ui.color("Waiting for server", :magenta)}"
