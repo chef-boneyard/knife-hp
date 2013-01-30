@@ -4,7 +4,6 @@ This is a list of features currently lacking and (eventually) under development:
 * should the node.name and node.id be the same (might have to fix this in the ohai plugin since this appears unavailable for setting)
 * take either the flavor ID or the flavor name for server create
 * take either the image ID or the image name for server create
-* Virtual cpus to `hp flavor list`?
 * Show the flavor and image names in `hp server list`
 * Validate ohai cloud support (waiting on OHAI-425)
 
