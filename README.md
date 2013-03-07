@@ -3,7 +3,7 @@ Knife HP
 
 This is the official Opscode Knife plugin for HP Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
 
-Please refer to the CHANGELOG.md for version history.
+Please refer to the (CHANGELOG.md) for version history.
 
 # Installation #
 
@@ -90,9 +90,9 @@ Outputs a list of the security groups available to the currently configured HP C
 
 KNOWN ISSUES
 ============
-There are a number of known issues waiting for upstream patches to be merged in Fog and added to Ohai. The CHANGELOG.md has more missing/incomplete features listed.
 
 * There is no support in Ohai yet, but the empty `/etc/chef/ohai/hints/hp.json` is created. http://tickets.opscode.com/browse/OHAI-425
+* The [CHANGELOG](CHANGELOG.md) has more missing/incomplete features listed.
 
 # License #
 
