@@ -1,6 +1,6 @@
 #
 # Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012 Opscode, Inc.
+# Copyright:: Copyright (c) 2012-2013 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,9 +25,6 @@ class Chef
       include Knife::HpBase
 
       deps do
-        require 'fog'
-        require 'readline'
-        require 'chef/json_compat'
         require 'chef/knife/bootstrap'
         Chef::Knife::Bootstrap.load_deps
       end
@@ -120,6 +117,12 @@ class Chef
       :boolean => true,
       :default => true
 
+      option :private_network,
+      :long => '--private-network',
+      :description => 'Use the private IP for bootstrapping rather than the public IP',
+      :boolean => true,
+      :default => false
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -149,21 +152,8 @@ class Chef
 
         validate!
 
-        connection = Fog::Compute.new(
-          :provider => 'HP',
-          :hp_account_id => Chef::Config[:knife][:hp_account_id],
-          :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
-          :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
-          :hp_auth_uri => locate_config_value(:hp_auth_uri),
-          :hp_avl_zone => locate_config_value(:hp_avl_zone).to_sym
-          )
-
-        #request and assign a floating IP for the server
-        address = connection.addresses.create()
-        Chef::Log.debug("Floating IP #{address.ip}")
-
         #servers require a name, generate one if not passed
-        node_name = get_node_name(config[:chef_node_name], address.ip)
+        node_name = get_node_name(config[:chef_node_name])
 
         Chef::Log.debug("Name #{node_name}")
         Chef::Log.debug("Flavor #{locate_config_value(:flavor)}")
@@ -189,7 +179,7 @@ class Chef
       msg_pair("Instance Name", server.name)
       msg_pair("Flavor", server.flavor['id'])
       msg_pair("Image", server.image['id'])
-      #msg_pair("Security Group(s)", server.security_groups.join(", "))
+      msg_pair("Security Group(s)", server.security_groups.collect {|x| x['name']}.join(", "))
       msg_pair("SSH Key Pair", server.key_name)
 
       print "\n#{ui.color("Waiting for server", :magenta)}"
@@ -197,35 +187,38 @@ class Chef
       # wait for it to be ready to do stuff
       server.wait_for { print "."; ready? }
 
-      address.server = server
-
-      server.wait_for { print "."; ready? }
-
       puts("\n")
 
       msg_pair("Public IP Address", server.public_ip_address)
       msg_pair("Private IP Address", server.private_ip_address)
 
+      # bootstrap using private network.
+      if config[:private_network]
+        bootstrap_ip_address = server.private_ip_address
+      else
+        bootstrap_ip_address = server.public_ip_address
+      end
+
       print "\n#{ui.color("Waiting for sshd", :magenta)}"
 
-      #hack to ensure the nodes have had time to spin up
+      # hack to ensure the nodes have had time to spin up
       print(".")
       sleep 30
       print(".")
 
-      print(".") until tcp_test_ssh(server.public_ip_address) {
+      print(".") until tcp_test_ssh(bootstrap_ip_address) {
         sleep @initial_sleep_delay ||= 10
         puts("done")
       }
 
-      bootstrap_for_node(server).run
+      bootstrap_for_node(server, bootstrap_ip_address).run
 
       puts "\n"
       msg_pair("Instance ID", server.id)
       msg_pair("Instance Name", server.name)
       msg_pair("Flavor", server.flavor['id'])
       msg_pair("Image", server.image['id'])
-      #msg_pair("Security Group(s)", server.security_groups.join(", "))
+      msg_pair("Security Group(s)", server.security_groups.collect {|x| x['name']}.join(", "))
       msg_pair("SSH Key Pair", server.key_name)
       msg_pair("Public IP Address", server.public_ip_address)
       msg_pair("Private IP Address", server.private_ip_address)
@@ -233,9 +226,9 @@ class Chef
       msg_pair("Run List", config[:run_list].join(', '))
     end
 
-    def bootstrap_for_node(server)
+    def bootstrap_for_node(server, bootstrap_ip_address)
       bootstrap = Chef::Knife::Bootstrap.new
-      bootstrap.name_args = [server.public_ip_address]
+      bootstrap.name_args = bootstrap_ip_address
       bootstrap.config[:run_list] = config[:run_list]
       bootstrap.config[:ssh_user] = config[:ssh_user]
       bootstrap.config[:identity_file] = config[:identity_file]
@@ -251,24 +244,34 @@ class Chef
       bootstrap
     end
 
-    def ami
-      @ami ||= connection.images.get(locate_config_value(:image))
+    def flavor
+      @flavor ||= connection.flavors.get(locate_config_value(:flavor))
+    end
+
+    def image
+      @image ||= connection.images.get(locate_config_value(:image))
     end
 
     def validate!
 
-      super([:image, :flavor, :hp_account_id, :hp_secret_key, :hp_tenant_id])
+      super([:image, :flavor, :hp_access_key, :hp_secret_key, :hp_tenant_id])
 
-      if ami.nil?
-        ui.error("You have not provided a valid image ID. Please note the short option for this value recently changed from '-i' to '-I'.")
+      if flavor.nil?
+        ui.error("You have not provided a valid flavor ID. Please note the options for this value are -f or --flavor.")
+        exit 1
+      end
+
+      if image.nil?
+        ui.error("You have not provided a valid image ID. Please note the options for this value are -I or --image.")
         exit 1
       end
     end
 
-    #generate a name from the IP if chef_node_name is empty
-    def get_node_name(chef_node_name, ipaddress)
+    #generate a random name if chef_node_name is empty
+    def get_node_name(chef_node_name)
       return chef_node_name unless chef_node_name.nil?
-      chef_node_name = "hp"+ipaddress.gsub(/\./,'-')
+      #lazy uuids
+      chef_node_name = "hp-"+rand.to_s.split('.')[1]
     end
   end
 end

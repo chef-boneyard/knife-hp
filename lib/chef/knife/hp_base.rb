@@ -1,6 +1,6 @@
 #
 # Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012 Opscode, Inc.
+# Copyright:: Copyright (c) 2012-2013 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'fog'
 
 class Chef
   class Knife
@@ -29,16 +29,17 @@ class Chef
         includer.class_eval do
 
           deps do
-            require 'fog'
-            require 'readline'
             require 'chef/json_compat'
+            require 'chef/knife'
+            require 'readline'
+            Chef::Knife.load_deps
           end
 
-          option :hp_account_id,
+          option :hp_access_key,
           :short => "-A ID",
-          :long => "--hp-account ID",
+          :long => "--hp-access ID",
           :description => "Your HP Cloud Access Key ID",
-          :proc => Proc.new { |key| Chef::Config[:knife][:hp_account_id] = key }
+          :proc => Proc.new { |key| Chef::Config[:knife][:hp_access_key] = key }
 
           option :hp_secret_key,
           :short => "-K SECRET",
@@ -62,25 +63,25 @@ class Chef
           :short => "-Z Zone",
           :long => "--hp-zone Zone",
           :default => "az1",
-          :description => "Your HP Cloud Availability Zone (az1/az2)",
+          :description => "Your HP Cloud Availability Zone (az1/az2/az3)",
           :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key }
         end
       end
 
       def connection
-        Chef::Log.debug("hp_account_id: #{Chef::Config[:knife][:hp_account_id]}")
+        Chef::Log.debug("hp_access_key: #{Chef::Config[:knife][:hp_access_key]}")
         Chef::Log.debug("hp_secret_key: #{Chef::Config[:knife][:hp_secret_key]}")
         Chef::Log.debug("hp_tenant_id: #{Chef::Config[:knife][:hp_tenant_id]}")
         Chef::Log.debug("hp_auth_uri: #{locate_config_value(:hp_auth_uri)}")
-        Chef::Log.debug("hp_avl_zone: #{locate_config_value(:hp_avl_zone)}")
+        Chef::Log.debug("hp_avl_zone: #{availability_zone()}")
         @connection ||= begin
                           connection = Fog::Compute.new(
             :provider => 'HP',
-            :hp_account_id => Chef::Config[:knife][:hp_account_id],
+            :hp_access_key => Chef::Config[:knife][:hp_access_key],
             :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
             :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
             :hp_auth_uri => locate_config_value(:hp_auth_uri),
-            :hp_avl_zone => locate_config_value(:hp_avl_zone).to_sym
+            :hp_avl_zone => availability_zone()
             )
                         end
       end
@@ -96,7 +97,7 @@ class Chef
         end
       end
 
-      def validate!(keys=[:hp_account_id, :hp_secret_key, :hp_tenant_id])
+      def validate!(keys=[:hp_access_key, :hp_secret_key, :hp_tenant_id])
         errors = []
 
         keys.each do |k|
@@ -108,6 +109,17 @@ class Chef
 
         if errors.each{|e| ui.error(e)}.any?
           exit 1
+        end
+      end
+
+      def availability_zone()
+        case locate_config_value(:hp_avl_zone)
+        when 'az3'
+          return 'az-3.region-a.geo-1'
+        when 'az2'
+          return 'az-2.region-a.geo-1'
+        else
+          return 'az-1.region-a.geo-1'
         end
       end
 

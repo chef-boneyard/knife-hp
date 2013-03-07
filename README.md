@@ -21,15 +21,15 @@ Depending on your system's configuration, you may need to run this command with 
 
 In order to communicate with HP Compute Cloud's API you will need to tell Knife the Access Key ID, the Secret Key and Tenant ID (found on the "API Keys" page). You may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
 
-    knife[:hp_account_id] = "Your HP Cloud Access Key ID"
+    knife[:hp_access_key] = "Your HP Cloud Access Key ID"
     knife[:hp_secret_key] = "Your HP Cloud Secret Key"
     knife[:hp_tenant_id]  = "Your HP Cloud Tenant ID"
-    knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-    knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is "az1")
+    knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+    knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is 'az1', choices are 'az1', 'az2' or 'az3')
 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
-    knife[:hp_account_id] = "#{ENV['HP_ACCESS_KEY']}"
+    knife[:hp_access_key] = "#{ENV['HP_ACCESS_KEY']}"
     knife[:hp_secret_key] = "#{ENV['HP_SECRET_KEY']}"
     knife[:hp_tenant_id]  = "#{ENV['HP_TENANT_ID']}"
     knife[:hp_auth_uri]   = "#{ENV['HP_AUTH_URI']}"
@@ -37,11 +37,11 @@ If your knife.rb file will be checked into a SCM system (ie readable by others) 
 
 You also have the option of passing your HP Cloud API options from the command line:
 
-    `-A` (or `--hp-account`) your HP Cloud Access Key ID
+    `-A` (or `--hp-access`) your HP Cloud Access Key ID
     `-K` (or `--hp-secret`) your HP Cloud Secret Key
     `-T` (or `--hp-tenant`) your HP Cloud Tenant ID
-    `--hp-auth` your HP Cloud Auth URI (optional, default is "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is "az1")
+    `--hp-auth` your HP Cloud Auth URI (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is 'az1', choices are 'az1', 'az2' or 'az3')
 
     knife hp server create -A 'MyUsername' -K 'MyPassword' -T 'MyTenant' -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
 
@@ -59,14 +59,14 @@ This plugin provides the following Knife subcommands. Specific command options c
 knife hp server create
 ----------------------
 
-Provisions a new server in the HP Compute Cloud and then perform a Chef bootstrap (using the SSH protocol). The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef Server. By default the server is bootstrapped using the [chef-full](https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/chef-full.erb) template. This can be overridden using the `-d` or `--template-file` command options. If you do not pass a node name with `-N NAME` (or `--node-name NAME`) a name will be generated for the node. The default behavior for nodes created through HP's API are to be given an public floating address.
+Provisions a new server in the HP Compute Cloud and then perform a Chef bootstrap (using the SSH protocol). The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef Server. By default the server is bootstrapped using the [chef-full](https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/chef-full.erb) template. This can be overridden using the `-d` or `--template-file` command options. If you do not pass a node name with `-N NAME` (or `--node-name NAME`) a name will be generated for the node.
 
     knife hp server create -f 101 -I 9883 -S hpkeypair -i ~/.ssh/hpkeypair.pem -Z az2 -x ubuntu
 
 knife hp server delete
 ----------------------
 
-Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server without using the `-P` or `--purge` option to purge the client. The floating address associated with the node is released on deletion.
+Deletes an existing server in the currently configured HP Compute Cloud account. <b>PLEASE NOTE</b> - this does not delete the associated node and client objects from the Chef Server without using the `-P` or `--purge` option to purge the client.
 
 knife hp server list
 --------------------
@@ -76,26 +76,29 @@ Outputs a list of all servers in the currently configured HP Compute Cloud accou
 knife hp flavor list
 --------------------
 
-Outputs a list of all available flavors (available hardware configuration for a server) available to the currently configured HP Compute Cloud account. Each flavor has a unique combination of virtual cores, disk space and memory capacity. This data can be useful when choosing a flavor id to pass to the `knife hp server create` subcommand.
+Outputs a list of all flavors (hardware configuration for a server) available to the currently configured HP Compute Cloud account. Each flavor has a unique combination of virtual cores, disk space and memory capacity. This data may be useful when choosing a flavor id to pass to the `knife hp server create` subcommand.
 
 knife hp image list
 -------------------
 
-Outputs a list of all available images available to the currently configured HP Compute Cloud account. An image is a collection of files used to create or rebuild a server. Currently the list returned is unfiltered and does not match the view on the dashboard, images with "(Kernel)" and "(Ramdisk)" are not intended for use bootstrapping. This data can be useful when choosing an image id to pass to the `knife hp server create` subcommand.
+Outputs a list of all images available to the currently configured HP Compute Cloud account. An image is a collection of files used to create or rebuild a server. The returned list filtered and does not contain images with "(deprecated)", "(Kernel)" or "(Ramdisk)" in their names (this may be disabled with `--disable-filter`). This data may be useful when choosing an image id to pass to the `knife hp server create` subcommand.
+
+knife hp group list
+--------------------
+
+Outputs a list of the security groups available to the currently configured HP Compute Cloud account. Each group may have multiple rules. This data may be useful when choosing your security group(s) to pass to the `knife hp server create` subcommand.
 
 KNOWN ISSUES
 ============
 There are a number of known issues waiting for upstream patches to be merged in Fog and added to Ohai. The CHANGELOG.md has more missing/incomplete features listed.
 
-* az1 is currently unavailable via Fog. The default Availability Zone through the API is 'az3', even when specifying 'az1'. Yet 'az3' is unavailable as an selection option (https://github.com/fog/fog/pull/903). To work with az3, do not pass an Availability Zone at all. See also https://github.com/fog/fog/issues/1175
-* The names of the HP Cloud Access Key ID should change from `hp_access_key` to `hp_account_id` to match HP's description https://github.com/fog/fog/pull/902
-* There is no support in Ohai yet, but the empty `/etc/chef/ohai/hints/hp.json` is created. http://tickets.opscode.com/browse/OHAI-335
+* There is no support in Ohai yet, but the empty `/etc/chef/ohai/hints/hp.json` is created. http://tickets.opscode.com/browse/OHAI-425
 
 # License #
 
 Author:: Matt Ray (<matt@opscode.com>)
 
-Copyright:: Copyright (c) 2012 Opscode, Inc.
+Copyright:: Copyright (c) 2012-2013 Opscode, Inc.
 
 License:: Apache License, Version 2.0
 

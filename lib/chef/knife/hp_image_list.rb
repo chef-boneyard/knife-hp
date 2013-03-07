@@ -26,6 +26,12 @@ class Chef
 
       banner "knife hp image list (options)"
 
+      option :disable_filter,
+      :long => "--disable-filter",
+      :description => "Disable filtering of the image list. Currently filters names containing '(deprecated)', '(Ramdisk)' and '(Kernel)'",
+      :boolean => true,
+      :default => false
+
       def run
 
         validate!
@@ -33,21 +39,16 @@ class Chef
         image_list = [
           ui.color('ID', :bold),
           ui.color('Name', :bold),
-          # ui.color('Kernel ID', :bold),
-          # ui.color('Architecture', :bold),
-          # ui.color('Root Store', :bold),
-          # ui.color('Location', :bold)
         ]
 
         connection.images.sort_by do |image|
           [image.name.downcase, image.id].compact
         end.each do |image|
-          image_list << image.id
-          image_list << image.name
-          # image_list << image.kernel_id
-          # image_list << image.architecture
-          # image_list << image.root_device_type
-          # image_list << image.location
+          unless ((image.name =~ /(deprecated)|(Ramdisk)|(Kernel)/) &&
+              !config[:disable_filter])
+            image_list << image.id
+            image_list << image.name
+          end
         end
 
         image_list = image_list.map do |item|
