@@ -8,8 +8,8 @@ This is a list of features currently lacking and (eventually) under development:
 * Validate ohai cloud support (waiting on OHAI-425)
 
 ## v0.3.0
-* update dependency on to Fog 1.9.X
-* switched back to hp_access_key from hp_account_id since it's fixed in Fog 1.9.X
+* update dependency on to Fog 1.10.0
+* switched back to hp_access_key from hp_account_id since it's fixed in Fog 1.10.0
 * remove support for floating IPs since they're no longer needed, reported by Simon McCartney and Rupak Ganguly
 * 'delay-loading' changes to reduce load-time (Mohit Sethi)
 * added 'knife hp group list' for listing security groups and their rules (KNIFE-227)
