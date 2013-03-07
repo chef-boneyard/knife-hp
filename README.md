@@ -3,7 +3,7 @@ Knife HP
 
 This is the official Opscode Knife plugin for HP Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Cloud.
 
-Please refer to the (CHANGELOG.md) for version history.
+Please refer to the [CHANGELOG](CHANGELOG.md) for version history.
 
 # Installation #
 
