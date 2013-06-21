@@ -7,12 +7,15 @@ This is a list of features currently lacking and (eventually) under development:
 * Show the flavor and image names in `hp server list`
 * Validate ohai cloud support (waiting on OHAI-425)
 
+## v0.3.1
+* KNIFE-309 knife hp server list fails with nil image
+
 ## v0.3.0
 * update dependency on to Fog 1.10.0
 * switched back to hp_access_key from hp_account_id since it's fixed in Fog 1.10.0
 * remove support for floating IPs since they're no longer needed, reported by Simon McCartney and Rupak Ganguly
 * 'delay-loading' changes to reduce load-time (Mohit Sethi)
-* added 'knife hp group list' for listing security groups and their rules (KNIFE-227)
+* KNIFE-227 added 'knife hp group list' for listing security groups and their rules
 * filter out extraneous images from knife hp image list (requires HP metadata not yet available)
 
 ## v0.2.0
