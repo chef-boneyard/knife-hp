@@ -43,12 +43,18 @@ class Chef
         ]
         connection.servers.all.sort_by(&:id).each do |server|
           Chef::Log.debug("Server: #{server.to_yaml}")
+          # require 'pry'
+          # binding.pry
           server_list << server.id.to_s
           server_list << server.name
           server_list << (server.public_ip_address or "")
           server_list << (server.private_ip_address or "")
           server_list << server.flavor['id'].to_s
-          server_list << server.image['id'].to_s
+          if server.image
+            server_list << server.image['id']
+          else
+            server_list << ""
+          end
           server_list << (server.key_name or "")
           server_list << begin
                            state = server.state.to_s.downcase
