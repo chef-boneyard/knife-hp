@@ -8,7 +8,7 @@ This is a list of features currently lacking and (eventually) under development:
 * Validate ohai cloud support (waiting on OHAI-425)
 
 ## v0.3.1
-* KNIFE-309 knife hp server list fails with nil image
+* KNIFE-309 knife hp server list fails with nil image from boot from volume
 
 ## v0.3.0
 * update dependency on to Fog 1.10.0

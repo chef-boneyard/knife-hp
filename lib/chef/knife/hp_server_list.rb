@@ -43,8 +43,7 @@ class Chef
         ]
         connection.servers.all.sort_by(&:id).each do |server|
           Chef::Log.debug("Server: #{server.to_yaml}")
-          # require 'pry'
-          # binding.pry
+
           server_list << server.id.to_s
           server_list << server.name
           server_list << (server.public_ip_address or "")
