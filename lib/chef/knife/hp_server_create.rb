@@ -1,6 +1,6 @@
 #
-# Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012-2013 Opscode, Inc.
+# Author:: Matt Ray (<matt@getchef.com>)
+# Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,6 +55,13 @@ class Chef
       :long => "--ssh-key KEY",
       :description => "The HP Cloud Key Pair ID",
       :proc => Proc.new { |key| Chef::Config[:knife][:hp_ssh_key_id] = key }
+
+      option :availability_zone,
+      :short => "-Z Zone",
+      :long => "--hp-zone Zone",
+      :default => "az1",
+      :description => "Your HP Cloud Availability Zone within your Region (az1/az2/az3)",
+      :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key }
 
       option :chef_node_name,
       :short => "-N NAME",
@@ -159,6 +166,7 @@ class Chef
         Chef::Log.debug("Flavor #{locate_config_value(:flavor)}")
         Chef::Log.debug("Image #{locate_config_value(:image)}")
         Chef::Log.debug("Group(s) #{config[:security_groups]}")
+        Chef::Log.debug("Availability Zone #{locate_config_value(:availability_zone)}")
         Chef::Log.debug("Key Pair #{Chef::Config[:knife][:hp_ssh_key_id]}")
 
         server_def = {
@@ -166,6 +174,7 @@ class Chef
         :flavor_id => locate_config_value(:flavor),
         :image_id => locate_config_value(:image),
         :security_groups => config[:security_groups],
+        :availability_zone => locate_config_value(:availability_zone),
         :key_name => Chef::Config[:knife][:hp_ssh_key_id],
         :personality => [{
             "path" => "/etc/chef/ohai/hints/hp.json",
@@ -177,8 +186,8 @@ class Chef
 
       msg_pair("Instance ID", server.id)
       msg_pair("Instance Name", server.name)
-      msg_pair("Flavor", server.flavor['id'])
-      msg_pair("Image", server.image['id'])
+      msg_pair("Flavor", server.flavor.name)
+      msg_pair("Image", server.image.name)
       msg_pair("Security Group(s)", server.security_groups.collect {|x| x['name']}.join(", "))
       msg_pair("SSH Key Pair", server.key_name)
 
