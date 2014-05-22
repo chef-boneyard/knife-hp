@@ -1,6 +1,6 @@
 #
-# Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012 Opscode, Inc.
+# Author:: Matt Ray (<matt@getchef.com>)
+# Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,16 +33,16 @@ class Chef
         flavor_list = [
           ui.color('ID', :bold),
           ui.color('Name', :bold),
-          ui.color('Cores', :bold),
+          ui.color('VCPUs', :bold),
           ui.color('RAM', :bold),
           ui.color('Disk', :bold),
         ]
-        connection.flavors.sort_by(&:id).each do |flavor|
-          flavor_list << flavor.id.to_s
-          flavor_list << flavor.name
-          flavor_list << flavor.cores.to_s
-          flavor_list << "#{flavor.ram.to_s} MB"
-          flavor_list << "#{flavor.disk.to_s} GB"
+        connection.list_flavors_detail.body['flavors'].sort_by { |h| h['name'] }.each do |flavor|
+          flavor_list << flavor['id']
+          flavor_list << flavor['name']
+          flavor_list << flavor['vcpus'].to_s
+          flavor_list << "#{flavor['ram'].to_s} MB"
+          flavor_list << "#{flavor['disk'].to_s} GB"
         end
         puts ui.list(flavor_list, :uneven_columns_across, 5)
       end
