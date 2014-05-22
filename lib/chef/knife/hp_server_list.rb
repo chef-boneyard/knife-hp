@@ -1,6 +1,6 @@
 #
-# Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012 Opscode, Inc.
+# Author:: Matt Ray (<matt@getchef.com>)
+# Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,27 +38,25 @@ class Chef
           ui.color('Private IP', :bold),
           ui.color('Flavor', :bold),
           ui.color('Image', :bold),
+          ui.color('Availability Zone', :bold),
           ui.color('Key Pair', :bold),
           ui.color('State', :bold)
         ]
-        connection.servers.all.sort_by(&:id).each do |server|
+        connection.list_servers_detail.body['servers'].sort_by { |h| h['name'] }.each do |server|
           Chef::Log.debug("Server: #{server.to_yaml}")
 
-          server_list << server.id.to_s
-          server_list << server.name
-          server_list << (server.public_ip_address or "")
-          server_list << (server.private_ip_address or "")
-          server_list << server.flavor['id'].to_s
-          if server.image
-            server_list << server.image['id']
-          else
-            server_list << ""
-          end
-          server_list << (server.key_name or "")
+          server_list << server['id']
+          server_list << server['name']
+          server_list << (server['addresses']['public'] or "")
+          server_list << (server['addresses']['private'] or "")
+          server_list << server['flavor']['id']
+          server_list << server['image']['id']
+          server_list << server['OS-EXT-AZ:availability_zone']
+          server_list << (server['key_name'] or "")
           server_list << begin
-                           state = server.state.to_s.downcase
+                           state = server['status'].downcase
                            case state
-                           when 'shutting-down','terminated','stopping','stopped','active(deleting)','build(deleting)'
+                           when 'shutting-down','terminated','stopping','stopped','active(deleting)','build(deleting)','error'
                              ui.color(state, :red)
                            when 'pending','build(scheduling)','build(spawning)','build(networking)'
                              ui.color(state, :yellow)
@@ -67,11 +65,9 @@ class Chef
                            end
                          end
         end
-        puts ui.list(server_list, :uneven_columns_across, 8)
+        puts ui.list(server_list, :uneven_columns_across, 9)
 
       end
     end
   end
 end
-
-
