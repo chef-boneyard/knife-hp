@@ -1,6 +1,6 @@
 #
-# Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012-2013 Opscode, Inc.
+# Author:: Matt Ray (<matt@getchef.com>)
+# Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ class Chef
           option :hp_secret_key,
           :short => "-K SECRET",
           :long => "--hp-secret SECRET",
-          :description => "Your HP Cloud Secret Key",
+          :description => "Your HP Cloud Access Secret Key",
           :proc => Proc.new { |key| Chef::Config[:knife][:hp_secret_key] = key }
 
           option :hp_tenant_id,
@@ -60,28 +60,30 @@ class Chef
           :proc => Proc.new { |endpoint| Chef::Config[:knife][:hp_auth_uri] = endpoint }
 
           option :hp_avl_zone,
-          :short => "-Z Zone",
-          :long => "--hp-zone Zone",
-          :default => "az1",
-          :description => "Your HP Cloud Availability Zone (az1/az2/az3)",
-          :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key }
+          :short => "-R region",
+          :long => "--hp-region Region",
+          :default => "US-EAST",
+          :description => "Your HP Cloud Region (US-EAST/US-WEST)",
+          :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key.downcase }
+
         end
       end
 
       def connection
-        Chef::Log.debug("hp_access_key: #{Chef::Config[:knife][:hp_access_key]}")
-        Chef::Log.debug("hp_secret_key: #{Chef::Config[:knife][:hp_secret_key]}")
-        Chef::Log.debug("hp_tenant_id: #{Chef::Config[:knife][:hp_tenant_id]}")
         Chef::Log.debug("hp_auth_uri: #{locate_config_value(:hp_auth_uri)}")
-        Chef::Log.debug("hp_avl_zone: #{availability_zone()}")
+        Chef::Log.debug("hp_access_key: #{locate_config_value(:hp_access_key)}")
+        Chef::Log.debug("hp_secret_key: #{locate_config_value(:hp_secret_key)}")
+        Chef::Log.debug("hp_tenant_id: #{locate_config_value(:hp_tenant_id)}")
+        Chef::Log.debug("hp_avl_zone: #{region()}")
         @connection ||= begin
                           connection = Fog::Compute.new(
             :provider => 'HP',
-            :hp_access_key => Chef::Config[:knife][:hp_access_key],
-            :hp_secret_key => Chef::Config[:knife][:hp_secret_key],
-            :hp_tenant_id => Chef::Config[:knife][:hp_tenant_id],
+            :version => :v2,
             :hp_auth_uri => locate_config_value(:hp_auth_uri),
-            :hp_avl_zone => availability_zone()
+            :hp_access_key => locate_config_value(:hp_access_key),
+            :hp_secret_key => locate_config_value(:hp_secret_key),
+            :hp_tenant_id => locate_config_value(:hp_tenant_id),
+            :hp_avl_zone => region()
             )
                         end
       end
@@ -103,7 +105,7 @@ class Chef
         keys.each do |k|
           pretty_key = k.to_s.gsub(/_/, ' ').gsub(/\w+/){ |w| (w =~ /(ssh)|(hp)/i) ? w.upcase  : w.capitalize }
           if Chef::Config[:knife][k].nil?
-            errors << "You did not provided a valid '#{pretty_key}' value."
+            errors << "You did not provide a valid '#{pretty_key}' value."
           end
         end
 
@@ -112,19 +114,17 @@ class Chef
         end
       end
 
-      def availability_zone()
+      def region()
         case locate_config_value(:hp_avl_zone)
-        when 'az3'
-          return 'az-3.region-a.geo-1'
-        when 'az2'
-          return 'az-2.region-a.geo-1'
+        when 'us-west'
+          Chef::Log.debug("hp_avl_zone: us-west->'region-a.geo-1'")
+          return 'region-a.geo-1'
         else
-          return 'az-1.region-a.geo-1'
+          Chef::Log.debug("hp_avl_zone: us-east->'region-b.geo-1'")
+          return 'region-b.geo-1'
         end
       end
 
     end
   end
 end
-
-
