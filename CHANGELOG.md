@@ -1,6 +1,9 @@
 ## v0.4.0
-* KNIFE-444 knife-hp incompatible with hpcloud v13.5
 * Upgrade to support 13.5 HP Helion Public Cloud Services. For more information check https://docs.hpcloud.com/migration-overview/
+* KNIFE-444 knife-hp incompatible with hpcloud v13.5
+* Added support for HP's regions (US East and US West) and the availability zones within those regions
+* Added 'knife hp network list'
+* Added floating IP address support
 
 ## v0.3.1
 * KNIFE-309 knife hp server list fails with nil image from boot from volume
