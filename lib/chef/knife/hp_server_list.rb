@@ -34,11 +34,9 @@ class Chef
         server_list = [
           ui.color('Instance ID', :bold),
           ui.color('Name', :bold),
-          ui.color('Public IP', :bold),
-          ui.color('Private IP', :bold),
           ui.color('Flavor', :bold),
           ui.color('Image', :bold),
-          ui.color('Availability Zone', :bold),
+          ui.color('Zone', :bold),
           ui.color('Key Pair', :bold),
           ui.color('State', :bold)
         ]
@@ -47,8 +45,6 @@ class Chef
 
           server_list << server['id']
           server_list << server['name']
-          server_list << (server['addresses']['public'] or "")
-          server_list << (server['addresses']['private'] or "")
           server_list << server['flavor']['id']
           server_list << server['image']['id']
           server_list << server['OS-EXT-AZ:availability_zone']
@@ -65,7 +61,7 @@ class Chef
                            end
                          end
         end
-        puts ui.list(server_list, :uneven_columns_across, 9)
+        puts ui.list(server_list, :uneven_columns_across, 7)
 
       end
     end
