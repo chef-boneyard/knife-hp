@@ -32,25 +32,27 @@ class Chef
 
         group_list = [
           ui.color('Name', :bold),
+          ui.color('Direction', :bold),
+          ui.color('Type', :bold),
           ui.color('Protocol', :bold),
-          ui.color('From', :bold),
-          ui.color('To', :bold),
-          ui.color('CIDR', :bold),
+          ui.color('Port Range', :bold),
+          ui.color('Remote', :bold),
           ui.color('Description', :bold),
         ]
-        connection.security_groups.sort_by(&:name).each do |group|
-          group.rules.each do |rule|
-            unless rule['ip_protocol'].nil?
+        netconnection.security_groups.sort_by(&:name).each do |group|
+          group.security_group_rules.each do |rule|
+            unless rule['protocol'].nil?
               group_list << group.name
-              group_list << rule['ip_protocol']
-              group_list << rule['from_port'].to_s
-              group_list << rule['to_port'].to_s
-              group_list << rule['ip_range']['cidr']
+              group_list << rule['direction']
+              group_list << rule['ethertype']
+              group_list << rule['protocol']
+              group_list << "#{rule['port_range_min']}-#{rule['port_range_max']}"
+              group_list << rule['remote_ip_prefix']
               group_list << group.description
             end
           end
         end
-        puts ui.list(group_list, :uneven_columns_across, 6)
+        puts ui.list(group_list, :uneven_columns_across, 7)
       end
     end
   end
