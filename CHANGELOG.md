@@ -4,6 +4,8 @@
 * Added support for HP's regions (US East and US West) and the availability zones within those regions
 * Added 'knife hp network list'
 * Added floating IP address support
+* Added --networks to specify networks to attach to
+* Replaced --private-network with --bootstrap-network
 
 ## v0.3.1
 * KNIFE-309 knife hp server list fails with nil image from boot from volume
