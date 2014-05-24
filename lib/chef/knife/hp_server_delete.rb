@@ -1,6 +1,6 @@
 #
-# Author:: Matt Ray (<matt@opscode.com>)
-# Copyright:: Copyright (c) 2012 Opscode, Inc.
+# Author:: Matt Ray (<matt@getchef.com>)
+# Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,30 +64,21 @@ class Chef
         @name_args.each do |instance_id|
           begin
             server = connection.servers.get(instance_id)
-            addresses = connection.addresses
 
             msg_pair("Instance ID", server.id)
             msg_pair("Instance Name", server.name)
-            msg_pair("Flavor", server.flavor['id'])
-            msg_pair("Image", server.image['id'])
-            msg_pair("Public IP Address", server.public_ip_address)
-            msg_pair("Private IP Address", server.private_ip_address)
+            msg_pair("Flavor", server.flavor.name)
+            msg_pair("Image", server.image.name)
+            msg_pair("Availability Zone", server.availability_zone)
+            server.addresses.each do |name,addr|
+              msg_pair("Network", name)
+              msg_pair("  IP Address", addr[0]['addr'])
+            end
 
             puts "\n"
             confirm("Do you really want to delete this server")
 
             server.destroy
-
-            #HP doesn't free allocated IPs when servers are deleted
-            #if the address is a floating, it's the first entry in the private addresses(?)
-            float = server.addresses['private'][0]['addr']
-            Chef::Log.debug("hp_server_delete: float:#{float}")
-            addresses.each do |address|
-              if !(address.fixed_ip.nil?) && (address.fixed_ip == float)
-                msg_pair("Deleted Floating IP Address", float)
-                address.destroy
-              end
-            end
 
             ui.warn("Deleted server #{server.id}")
 

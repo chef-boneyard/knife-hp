@@ -1,6 +1,6 @@
 #
 # Author:: Matt Ray (<matt@getchef.com>)
-# Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,35 +16,37 @@
 # limitations under the License.
 #
 
-require 'chef/knife/hp_base'
-
 class Chef
   class Knife
-    class HpFlavorList < Knife
+    class HpNetworkList < Knife
 
       include Knife::HpBase
 
-      banner "knife hp flavor list (options)"
+      banner "knife hp group list (options)"
+
+      require 'chef/knife/hp_base'
+
+      banner "knife hp network list (options)"
 
       def run
 
         validate!
 
-        flavor_list = [
-          ui.color('ID', :bold),
+        net_list = [
           ui.color('Name', :bold),
-          ui.color('VCPUs', :bold),
-          ui.color('RAM', :bold),
-          ui.color('Disk', :bold),
+          ui.color('ID', :bold),
+          ui.color('Tenant', :bold),
+          ui.color('External', :bold),
+          ui.color('Shared', :bold),
         ]
-        connection.list_flavors_detail.body['flavors'].sort_by { |h| h['name'] }.each do |flavor|
-          flavor_list << flavor['id']
-          flavor_list << flavor['name']
-          flavor_list << flavor['vcpus'].to_s
-          flavor_list << "#{flavor['ram'].to_s} MB"
-          flavor_list << "#{flavor['disk'].to_s} GB"
+        netconnection.list_networks.body['networks'].sort_by { |h| h['name'] }.each do |network|
+          net_list << network['name']
+          net_list << network['id']
+          net_list << network['tenant_id']
+          net_list << network['router:external'].to_s
+          net_list << network['shared'].to_s
         end
-        puts ui.list(flavor_list, :uneven_columns_across, 5)
+        puts ui.list(net_list, :uneven_columns_across, 5)
       end
     end
   end

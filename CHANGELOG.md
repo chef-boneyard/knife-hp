@@ -1,11 +1,11 @@
-# TODO #
-This is a list of features currently lacking and (eventually) under development:
-* should we sort the image list like the HP console does? segmented by Public/Partner/Private? "knife hp image list partner"?
-* should the node.name and node.id be the same (might have to fix this in the ohai plugin since this appears unavailable for setting)
-* take either the flavor ID or the flavor name for server create
-* take either the image ID or the image name for server create
-* Show the flavor and image names in `hp server list`
-* Validate ohai cloud support (waiting on OHAI-425)
+## v0.4.0
+* Upgrade to support 13.5 HP Helion Public Cloud Services. For more information check https://docs.hpcloud.com/migration-overview/
+* KNIFE-444 knife-hp incompatible with hpcloud v13.5
+* Added support for HP's regions (US East and US West) and the availability zones within those regions
+* Added 'knife hp network list'
+* Added floating IP address support
+* Added --networks to specify networks to attach to
+* Replaced --private-network with --bootstrap-network
 
 ## v0.3.1
 * KNIFE-309 knife hp server list fails with nil image from boot from volume
