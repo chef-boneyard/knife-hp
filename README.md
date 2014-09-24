@@ -27,7 +27,7 @@ In order to communicate with HP Helion Compute Cloud's API you will need to tell
     knife[:hp_secret_key] = "Your HP Cloud Secret Key"
     knife[:hp_tenant_id]  = "Your HP Cloud Tenant ID"
     knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-    knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is 'us-west', the other option is 'us-east[*](https://github.com/fog/fog/issues/3152)').
+    knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is 'us-west', the other option is 'us-east')
 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
@@ -43,7 +43,7 @@ You also have the option of passing your HP Cloud API options from the command l
     `-K` (or `--hp-secret`) your HP Cloud Secret Key
     `-T` (or `--hp-tenant`) your HP Cloud Tenant ID
     `--hp-auth` your HP Cloud Auth URI (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is 'us-west', the other option is 'us-east'[*](https://github.com/fog/fog/issues/3152))
+    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is 'us-west', the other option is 'us-east')
 
     knife hp server create -A 'MyUsername' -K 'MyPassword' -T 'MyTenant' -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
 
