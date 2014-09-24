@@ -1,3 +1,7 @@
+## v0.4.2
+* Updated the README.md to reflect the new names of the regions
+* Fixed the defaulting to the US-West region
+
 ## v0.4.0
 * Upgrade to support 13.5 HP Helion Public Cloud Services. For more information check https://docs.hpcloud.com/migration-overview/
 * KNIFE-444 knife-hp incompatible with hpcloud v13.5
