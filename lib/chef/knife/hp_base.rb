@@ -133,12 +133,12 @@ class Chef
 
       def region()
         case locate_config_value(:hp_avl_zone)
-        when 'us-west'
-          Chef::Log.debug("hp_avl_zone: us-west->'region-a.geo-1'")
-          return 'region-a.geo-1'
-        else
+        when 'us-east'
           Chef::Log.debug("hp_avl_zone: us-east->'region-b.geo-1'")
           return 'region-b.geo-1'
+        else
+          Chef::Log.debug("hp_avl_zone: us-west->'region-a.geo-1'")
+          return 'region-a.geo-1'
         end
       end
 
