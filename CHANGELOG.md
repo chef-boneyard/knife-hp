@@ -1,4 +1,4 @@
-## v0.4.2
+## v0.4.2rc1
 * Updated the README.md to reflect the new names of the regions
 * Fixed the defaulting to the US-West region
 
