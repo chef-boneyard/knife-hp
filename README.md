@@ -1,7 +1,7 @@
 Knife HP
 ========
 
-This is the official Opscode Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. (As of this most recent release [US-West is only supported](https://github.com/fog/fog/issues/3152), but you still have to activate the service) To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
+This is the official Opscode Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
 
 If you are still using the older version of the API, you may need version 0.3.1 of this plugin, HP's migration and upgrade instructions are here: https://docs.hpcloud.com/migration-overview-reference/.
 
