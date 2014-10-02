@@ -1,6 +1,7 @@
 ## v0.4.2rc1
 * Updated the README.md to reflect the new names of the regions
 * Fixed the defaulting to the US-West region
+* Added `:omit_default_port` to connection options so US-East region works again
 
 ## v0.4.0
 * Upgrade to support 13.5 HP Helion Public Cloud Services. For more information check https://docs.hpcloud.com/migration-overview/

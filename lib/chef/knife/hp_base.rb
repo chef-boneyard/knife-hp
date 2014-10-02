@@ -83,7 +83,10 @@ class Chef
             :hp_access_key => locate_config_value(:hp_access_key),
             :hp_secret_key => locate_config_value(:hp_secret_key),
             :hp_tenant_id => locate_config_value(:hp_tenant_id),
-            :hp_avl_zone => region()
+            :hp_avl_zone => region(),
+            :connection_options => {
+              :omit_default_port => true
+            }
             )
                         end
       end
