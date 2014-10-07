@@ -21,7 +21,7 @@ Depending on your system's configuration, you may need to run this command with 
 
 # Configuration #
 
-In order to communicate with HP Helion Compute Cloud's API you will need to tell Knife the Access Key ID, the Secret Key and Tenant ID (found on the "API Keys" page). You may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
+In order to communicate with HP Helion Compute Cloud's API you will need to tell Knife the Access Key ID, the Secret Key and Tenant ID (found by clicking the "Manage Access Keys" drop down). You may also override the auth URI and availability zone. The easiest way to accomplish this is to create these entries in your `knife.rb` file:
 
     knife[:hp_access_key] = "Your HP Cloud Access Key ID"
     knife[:hp_secret_key] = "Your HP Cloud Secret Key"
@@ -44,9 +44,9 @@ You also have the option of passing your HP Cloud API options from the command l
     `-K` (or `--hp-secret`) your HP Cloud Secret Key
     `-T` (or `--hp-tenant`) your HP Cloud Tenant ID
     `--hp-auth` your HP Cloud Auth URI (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-    `-Z` (or `--hp-zone`) your HP Cloud Availability Zone (optional, default is 'us-west', the other option is 'us-east')
+    `-R` (or `--hp-region`) your HP Cloud Availability Zone (optional, default is 'us-west', the other option is 'us-east')
 
-    knife hp server create -A 'MyUsername' -K 'MyPassword' -T 'MyTenant' -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
+    knife hp server create -A 'MyAccessKeyID' -K 'MySecretKey' -T 'MyTenant' -f 101 -I 120 -S hpkeypair -i ~/.ssh/hpkeypair.pem -r 'role[webserver]'
 
 Additionally the following options may be set in your `knife.rb`:
 
