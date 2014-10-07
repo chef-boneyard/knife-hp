@@ -1,7 +1,7 @@
 Knife HP
 ========
 
-This is the official Opscode Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. (As of this most recent release [US-West is only supported](https://github.com/fog/fog/issues/3152), but you still have to activate the service) To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
+This is the official Opscode Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. (You still have to activate the service) To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
 
 If you are still using the older version of the API, you may need version 0.3.1 of this plugin, HP's migration and upgrade instructions are here: https://docs.hpcloud.com/migration-overview-reference/.
 
@@ -28,6 +28,7 @@ In order to communicate with HP Helion Compute Cloud's API you will need to tell
     knife[:hp_tenant_id]  = "Your HP Cloud Tenant ID"
     knife[:hp_auth_uri]   = "Your HP Cloud Auth URI" (optional, default is 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
     knife[:hp_avl_zone]   = "Your HP Cloud Availability Zone" (optional, default is 'us-west', the other option is 'us-east')
+    knife[:hp_ssh_key_id] = "Your HP Cloud Uploaded SSH key" (optional, but strongly suggested)
 
 If your knife.rb file will be checked into a SCM system (ie readable by others) you may want to read the values from environment variables:
 
@@ -51,7 +52,6 @@ Additionally the following options may be set in your `knife.rb`:
 
 * flavor
 * image
-* hp_ssh_key_id
 * template_file
 
 # Subcommands #
@@ -104,6 +104,7 @@ Lists the networks available to the currently configured HP Helion Compute Cloud
 # License #
 
 Author:: Matt Ray (<matt@getchef.com>)
+Maintainer:: JJ Asghar (<jj@getchef.com>)
 
 Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
 
