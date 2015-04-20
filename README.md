@@ -1,7 +1,7 @@
 Knife HP
 ========
 
-# NOTE: this gem has been depricated in favor for [knife-openstack](https://github.com/chef/knife-openstack). There is a 1 to 1 support with this gem and it's commands to the `knife-openstack`.
+# NOTE: this gem has been deprecated in favor for [knife-openstack](https://github.com/chef/knife-openstack). There is a 1 to 1 support with this gem and it's commands to the `knife-openstack`.
 
 This is the official Chef Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. (You still have to activate the service) To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
 
