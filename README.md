@@ -1,7 +1,9 @@
 Knife HP
 ========
 
-This is the official Opscode Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. (You still have to activate the service) To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
+# NOTE: this gem has been deprecated in favor for [knife-openstack](https://github.com/chef/knife-openstack). There is a 1 to 1 support with this gem and it's commands to the `knife-openstack`.
+
+This is the official Chef Knife plugin for HP Helion Public Cloud Compute. This plugin gives knife the ability to create, bootstrap and manage instances in the HP Public Cloud 13.5 and later. You may need to go to https://horizon.hpcloud.com and enable Compute under "Activate Services" for the Region you wish to use. (You still have to activate the service) To properly configure your networks (include a router for external access), please refer to https://docs.hpcloud.com/hpcloudconsole.
 
 If you are still using the older version of the API, you may need version 0.3.1 of this plugin, HP's migration and upgrade instructions are here: https://docs.hpcloud.com/migration-overview-reference/.
 
@@ -103,10 +105,11 @@ Lists the networks available to the currently configured HP Helion Compute Cloud
 
 # License #
 
-Author:: Matt Ray (<matt@getchef.com>)
-Maintainer:: JJ Asghar (<jj@getchef.com>)
+Author:: Matt Ray (<matt@chef.io>)
 
-Copyright:: Copyright (c) 2012-2014 Chef Software, Inc.
+Maintainer:: JJ Asghar (<jj@chef.io>)
+
+Copyright:: Copyright (c) 2012-2015 Chef Software, Inc.
 
 License:: Apache License, Version 2.0
 

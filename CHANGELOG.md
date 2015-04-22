@@ -1,3 +1,5 @@
+# NOTE: this gem has been deprecated in favor for [knife-openstack](https://github.com/chef/knife-openstack). There is a 1 to 1 support with this gem and it's commands to the `knife-openstack`.
+
 ## v0.4.2
 * Updated the README.md to reflect the new names of the regions
 * Fixed the defaulting to the US-West region
